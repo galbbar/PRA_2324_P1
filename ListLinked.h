@@ -17,7 +17,7 @@ class ListLinked : public List<T>
 			first = nullptr;
 		}
 		
-		~ListArray()
+		~ListLinked()
 		{
 			while(first != nullptr)
 			{
@@ -30,9 +30,7 @@ class ListLinked : public List<T>
 		void insert(int pos, T e) override
 		{
 			if(pos < 0 || pos > n)
-				throw std::out_of_range("La posicion no es valida para el vector");
-			if(size() == max)
-				resize(size()*2);
+				throw std::out_of_range("La posicion no es valida para el nodo");
 				
 			if(pos == 0)
 				prepend(e);
@@ -42,9 +40,11 @@ class ListLinked : public List<T>
 					append(e);
 				else
 				{
-					for(int i=n; i>pos; i--)
-						arr[i] = arr[i-1]; 
-					arr[pos] = e;
+					Node<T>* aux = first;
+					for(int i=1; i<pos; i++)
+						aux = aux->next;
+					Node<T>* aux2 = new Node<T>(e, aux->next);
+					aux->next = aux2;
 					n++;
 				}
 			}
@@ -54,51 +54,80 @@ class ListLinked : public List<T>
 		virtual void append(T e) override
 		{ 
 			
-			if(size() == max)
-             			resize(size()*2);
-			arr[n] = e;
-			n++;
+			if(first == nullptr)
+             			prepend(e);
+			else
+			{
+				Node<T>* aux = first;
+				for(int i=1; i<size(); i++)
+					aux = aux->next;
+				Node<T>* aux2 = new Node<T>(e, aux->next);
+				aux->next = aux2;
+				n++;
+			}
 		}
 
 		virtual void prepend(T e) override
-		{ 
-		
-			if(size() == max)
-	     			resize(size()*2);
-      			else
-      			{
-	      			for(int i = n; i > 0; i --)
-		      			arr[i] = arr[i-1];	
-				arr[0] = e;
-	      			n++;
-      			} 
+		{
+			Node<T>* aux = new Node<T>(e,first);
+			first = aux;
+			n++;
 		}
 
 		virtual T remove(int pos) override
 		{
-			if(pos < 0 || pos > size()-1)
-				throw std::out_of_range("La posicion no es valida para el vector");
-			T aux = arr[pos];
+			Node<T>* aux = first;
+    			Node<T>* bas;
+    			int borr;
+    			if(pos > size()-1|| pos < 0)
+      				throw std::out_of_range("La posicion no es valida para el nodo");
+    
+    			else
+			{
+      				if(pos == 0)
+				{
+					first= aux->next;
+ 					bas = aux;	 
+					borr = bas->data;
 
-			for(int i=pos; i<n; i++)
-				arr[i] = arr[i+1];
-			n--;
-
-			return aux;
+      				}
+      				else
+      				{
+					for(int i = 1; i < pos;i++)
+	 					aux = aux->next;
+		
+					bas = aux->next;
+					borr = bas->data;
+					aux->next = bas->next;
+     				}
+      				n--;
+      				delete bas;
+      				return borr;
+    			}
 		}
 
 		virtual T get(int pos) override
 		{
 			if(pos < 0 || pos > size()-1)
 				throw std::out_of_range("La posicion no es valida para el vector");
-			return arr[pos];
+			else
+			{
+				Node<T>* aux = first;
+				for(int i=0; i<pos; i++)
+					aux = aux->next;
+				return aux->data;
+			}
 		}
 
 		virtual int search(T e) override
 		{
+			Node<T>* aux = first;
 			for(int i=0; i<n; i++)
-				if(arr[i] == e)
+			{
+				if(aux->data == 0)
 					return i;
+				aux = aux->next;
+			}
 			return -1;
 		}
 
@@ -125,12 +154,18 @@ class ListLinked : public List<T>
 			return aux->data;
 		}
 		
-		friend std::ostream& operator<<(std::ostream &out, const ListArray<T> &list)
+		friend std::ostream& operator<<(std::ostream &out, const ListLinked<T> &list)
 		{
 			out << "List -> [";
-			for(int i=0; i<list.n; i++)
-				out << list.arr[i] <<" ";
+			Node<T>* aux = list.first;
+
+			while(aux)
+			{	
+				out << aux->data <<" ";
+				aux = aux->next;
+			}
 			out << "]";
+			
 			return out;
 		}
 		
