@@ -41,7 +41,7 @@ class ListArray : public List<T>
 
 		T operator[](int pos)
 		{
-			if(pos < 0 || pos > size()-1)
+			if(pos < 0 || pos > n)
 			       	throw std::out_of_range("La posicion no es valida para el vector");
 			else
 				return arr[pos];	
@@ -58,7 +58,7 @@ class ListArray : public List<T>
 
 		virtual void insert(int pos, T e) override
 		{
-			if(pos < 0 || pos > size()-1)
+			if(pos < 0 || pos > n)
 				throw std::out_of_range("La posicion no es valida para el vector");
 			else 
 			{
@@ -95,7 +95,7 @@ class ListArray : public List<T>
 
 		virtual T remove(int pos) override
 		{
-			if(pos < 0 || pos > size()-1)
+			if(pos < 0 || pos > n)
 				throw std::out_of_range("La posicion no es valida para el vector");
 			else
 			{
@@ -111,7 +111,7 @@ class ListArray : public List<T>
 
 		virtual T get(int pos) override
 		{
-			if(pos < 0 || pos > size()-1)
+			if(pos < 0 || pos > n)
 				throw std::out_of_range("La posicion no es valida para el vector");
 			else
 				return arr[pos];
