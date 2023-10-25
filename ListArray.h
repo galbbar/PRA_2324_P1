@@ -43,8 +43,7 @@ class ListArray : public List<T>
 		{
 			if(pos < 0 || pos > n)
 			       	throw std::out_of_range("La posicion no es valida para el vector");
-			else
-				return arr[pos];	
+			return arr[pos];	
 		}
 		
 		friend std::ostream& operator<<(std::ostream &out, const ListArray<T> &list)
@@ -52,33 +51,15 @@ class ListArray : public List<T>
 			out << "List -> [";
 			for(int i=0; i<list.n; i++)
 				out << list.arr[i] << ", ";
-			out << "j";
+			out << "]";
 			return out;
 		}
 
-		virtual void insert(int pos, T e) override
+		virtual int size() override
 		{
-			if(pos < 0 || pos > n)
-				throw std::out_of_range("La posicion no es valida para el vector");
-			else 
-			{
-				if(pos == 0)
-					prepend(e);
-				else
-				{
-					if(pos == n)
-						append(e);
-					else
-					{
-						resize(size()+1);
-						for(int i=size()-1; i>=pos; i++)
-							arr[i+1] = arr[i]; 
-						arr[pos-1] = e;
-					}
-				}
-			}
+			return n;
 		}
-
+		
 		virtual void append(T e) override
 		{
 			resize(size()+1);
@@ -92,29 +73,51 @@ class ListArray : public List<T>
 				arr[i+1] = arr[i];
 			arr[0] = e;
 		}
+		
+		virtual void insert(int pos, T e) override
+		{
+			if(pos < 0 || pos > n)
+				throw std::out_of_range("La posicion no es valida para el vector");
+			if(size() == 0)
+				resize(size()*2);
+				
+			if(pos == 0)
+				prepend(e);
+			else
+			{
+				if(pos == n)
+					append(e);
+				else
+				{
+					resize(size()+1);
+					for(int i=size()-1; i>=pos; i--)
+						arr[i+1] = arr[i]; 
+					arr[pos-1] = e;
+				}
+			}
+			
+		}
+
+		
 
 		virtual T remove(int pos) override
 		{
 			if(pos < 0 || pos > n)
 				throw std::out_of_range("La posicion no es valida para el vector");
-			else
-			{
-				T aux = arr[pos-1];
-	
-				for(int i=pos-1; i<size(); i++)
-					arr[i] = arr[i+1];
-				resize(size()-1);
-	
-				return aux;
-			}
+			T aux = arr[pos-1];
+
+			for(int i=pos-1; i<size(); i++)
+				arr[i] = arr[i+1];
+			resize(size()-1);
+
+			return aux;
 		}
 
 		virtual T get(int pos) override
 		{
 			if(pos < 0 || pos > n)
 				throw std::out_of_range("La posicion no es valida para el vector");
-			else
-				return arr[pos];
+			return arr[pos];
 		}
 
 		virtual int search(T e) override
@@ -132,11 +135,6 @@ class ListArray : public List<T>
 				return true;
 			else
 				return false;	
-		}
-
-		virtual int size() override
-		{
-			return n;
 		}
 
 };
